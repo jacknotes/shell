@@ -56,7 +56,7 @@ host_var(){
 [root@test /shell]# ./make_iptables_rule.sh
 Usage ./make_iptables_rule.sh [ make | remove | show ]
 
-[root@test-backend02 /shell]# ./make_iptables_rule.sh show
+[root@test /shell]# ./make_iptables_rule.sh show
 ##########################
 [INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 [INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
@@ -93,7 +93,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 生成iptables规则
 ```bash
-[root@test-backend02 /shell]# ./make_iptables_rule.sh make
+[root@test /shell]# ./make_iptables_rule.sh make
 [INFO] CONTAINER:
 [INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
 [INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
@@ -118,7 +118,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 查看当前iptables中INPUT、FORWARD、DOCKER三个chain的规则
 ```bash
-[root@test-backend02 /shell]# ./make_iptables_rule.sh show
+[root@test /shell]# ./make_iptables_rule.sh show
 ##########################
 [INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 [INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
@@ -171,7 +171,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 移除所添加的iptables规则
 ```bash
-[root@test-backend02 /shell]# ./make_iptables_rule.sh remove
+[root@test /shell]# ./make_iptables_rule.sh remove
 [INFO] CONTAINER:
 [INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
@@ -196,7 +196,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 查看当前iptables中INPUT、FORWARD、DOCKER三个chain的规则
 ```bash
-[root@test-backend02 /shell]# ./make_iptables_rule.sh show
+[root@test /shell]# ./make_iptables_rule.sh show
 ##########################
 [INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 [INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
