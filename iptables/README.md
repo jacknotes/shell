@@ -4,6 +4,29 @@
 
 
 
+# 本地运行的服务
+```bash
+[root@test /shell]# ss -tnl
+State      Recv-Q Send-Q                                                                       Local Address:Port                                                                                      Peer Address:Port
+LISTEN     0      128                                                                                      *:6443                                                                                                 *:*
+LISTEN     0      128                                                                                      *:80                                                                                                   *:*
+LISTEN     0      128                                                                                      *:22                                                                                                   *:*
+LISTEN     0      128                                                                                      *:8088                                                                                                 *:*
+LISTEN     0      128                                                                              127.0.0.1:8089                                                                                                 *:*
+LISTEN     0      128                                                                                      *:443                                                                                                  *:*
+LISTEN     0      128                                                                                   [::]:9100                                                                                              [::]:*
+LISTEN     0      128                                                                                   [::]:8080                                                                                              [::]:*
+LISTEN     0      128                                                                                   [::]:8081                                                                                              [::]:*
+LISTEN     0      128                                                                                   [::]:22                                                                                                [::]:*
+[root@test /shell]# docker ps -a
+CONTAINER ID   IMAGE                                              COMMAND                  CREATED        STATUS        PORTS                  NAMES
+1e74d2ef4341   harborrepo.hs.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   2 hours ago    Up 2 hours    0.0.0.0:8081->80/tcp   nginx02
+2f5ccb866c4b   harborrepo.hs.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   23 hours ago   Up 23 hours   0.0.0.0:8080->80/tcp   nginx
+
+```
+
+
+
 # 配置访问IP黑白名单
 配置本地主机和容器的服务端口、黑名单地址、白名单地址，其中CONTAINER_PORTS变量的分隔符`:`之前表示容器暴露的宿主机端口，分隔符`:`之后表示容器内部的服务端口
 ```bash
