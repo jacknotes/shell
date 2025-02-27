@@ -34,7 +34,7 @@ container_var(){
         # HOST_PORT:CONTAINER_PORT
         declare -g -a CONTAINER_PORTS=('8080:80 8081:80')
         declare -g -a CONTAINER_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.122')
-        declare -g -a LOCALHOST_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
+        declare -g -a CONTAINER_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
 }
 
 host_var(){
@@ -55,18 +55,54 @@ host_var(){
 ```bash
 [root@test /shell]# ./make_iptables_rule.sh
 Usage ./make_iptables_rule.sh [ make | remove | show ]
+
+[root@test-backend02 /shell]# ./make_iptables_rule.sh show
+##########################
+[INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+##########################
+
+
+[INFO] host iptables rules
+##########################
+Chain INPUT (policy ACCEPT 432K packets, 47M bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+##########################
+
+
+[INFO] container iptables rules
+##########################
+Chain DOCKER (2 references)
+num   pkts bytes target     prot opt in     out     source               destination
+1        0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0
+2      134  7088 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:172.17.0.2:80
+3       24  1280 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8081 to:172.17.0.3:80
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1      332 43699 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+2      332 43699 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+3      158 19888 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+4       29  1516 DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0
+5      145 22295 ACCEPT     all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0
+6        0     0 ACCEPT     all  --  docker0 docker0  0.0.0.0/0            0.0.0.0/0
+##########################
 ```
 
 
 
 ## 生成iptables规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh make
+[root@test-backend02 /shell]# ./make_iptables_rule.sh make
 [INFO] CONTAINER:
 [INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
 [INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
+[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
 [INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
 [INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
+[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
 [INFO] LOCALHOST:
 [INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
 [INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
@@ -82,16 +118,16 @@ Usage ./make_iptables_rule.sh [ make | remove | show ]
 
 ## 查看当前iptables中INPUT、FORWARD、DOCKER三个chain的规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh show
+[root@test-backend02 /shell]# ./make_iptables_rule.sh show
 ##########################
 [INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST:
+[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 ##########################
 
 
 [INFO] host iptables rules
 ##########################
-Chain INPUT (policy ACCEPT 349 packets, 32894 bytes)
+Chain INPUT (policy ACCEPT 203 packets, 28190 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
 1        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       0.0.0.0/0            tcp dpt:8088
 2        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        0.0.0.0/0            tcp dpt:8088
@@ -109,21 +145,25 @@ num   pkts bytes target     prot opt in     out     source               destina
 Chain DOCKER (2 references)
 num   pkts bytes target     prot opt in     out     source               destination
 1        0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0
-2      131  6932 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:172.17.0.2:80
+2      134  7088 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:172.17.0.2:80
 3       24  1280 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8081 to:172.17.0.3:80
 
 Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
-1        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.3           tcp dpt:80
-2        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.3           tcp dpt:80
-3        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.2           tcp dpt:80
-4        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.2           tcp dpt:80
-5      302 40300 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-6      302 40300 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-7      143 17686 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
-8       26  1360 DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0
-9      133 21254 ACCEPT     all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0
-10       0     0 ACCEPT     all  --  docker0 docker0  0.0.0.0/0            0.0.0.0/0
+1        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.3           tcp dpt:80
+2        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.3           tcp dpt:80
+3        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.3           tcp dpt:80
+4        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.3           tcp dpt:80
+5        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.2           tcp dpt:80
+6        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.2           tcp dpt:80
+7        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.2           tcp dpt:80
+8        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.2           tcp dpt:80
+9      332 43699 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+10     332 43699 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+11     158 19888 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+12      29  1516 DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0
+13     145 22295 ACCEPT     all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0
+14       0     0 ACCEPT     all  --  docker0 docker0  0.0.0.0/0            0.0.0.0/0
 ##########################
 ```
 
@@ -131,12 +171,16 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 移除所添加的iptables规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh remove
+[root@test-backend02 /shell]# ./make_iptables_rule.sh remove
 [INFO] CONTAINER:
 [INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
+[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
+[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
 [INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
+[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
+[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
 [INFO] LOCALHOST:
 [INFO] remove iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
@@ -152,16 +196,16 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 查看当前iptables中INPUT、FORWARD、DOCKER三个chain的规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh show
+[root@test-backend02 /shell]# ./make_iptables_rule.sh show
 ##########################
 [INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST:
+[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 ##########################
 
 
 [INFO] host iptables rules
 ##########################
-Chain INPUT (policy ACCEPT 25 packets, 4840 bytes)
+Chain INPUT (policy ACCEPT 184 packets, 16028 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
 ##########################
 
@@ -171,16 +215,16 @@ num   pkts bytes target     prot opt in     out     source               destina
 Chain DOCKER (2 references)
 num   pkts bytes target     prot opt in     out     source               destination
 1        0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0
-2      131  6932 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:172.17.0.2:80
+2      134  7088 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:172.17.0.2:80
 3       24  1280 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8081 to:172.17.0.3:80
 
 Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
-1      302 40300 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-2      302 40300 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-3      143 17686 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
-4       26  1360 DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0
-5      133 21254 ACCEPT     all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0
+1      332 43699 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+2      332 43699 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+3      158 19888 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+4       29  1516 DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0
+5      145 22295 ACCEPT     all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0
 6        0     0 ACCEPT     all  --  docker0 docker0  0.0.0.0/0            0.0.0.0/0
 ##########################
 ```

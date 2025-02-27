@@ -7,15 +7,13 @@ container_var(){
         # HOST_PORT:CONTAINER_PORT
         declare -g -a CONTAINER_PORTS=('8080:80 8081:80')
         declare -g -a CONTAINER_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.122')
-        declare -g -a LOCALHOST_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
+        declare -g -a CONTAINER_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
 }
 
 host_var(){
         declare -g -a LOCALHOST_PORTS=('9100 8088 ')
         declare -g -a LOCALHOST_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.0/24')
         declare -g -a LOCALHOST_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
-        #declare -g -a LOCALHOST_IP_BLACK_LIST=('1.1.1.1 2.2.2.2')
-        #declare -g -a LOCALHOST_IP_WHITE_LIST=('3.3.3.3' '4.4.4.4')
 }
 
 init_var(){
@@ -228,3 +226,4 @@ case $1 in
                 echo "Usage $0 [ ${EXECUTE_ACTION_MAKE} | ${EXECUTE_ACTION_REMOVE} | show ]"
         ;;
 esac
+
