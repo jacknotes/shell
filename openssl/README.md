@@ -277,7 +277,7 @@ Verify return code: 20 (unable to get local issuer certificate)
 ./output/ssl_tls1_rd.markli.cn.txt nook
 ./output/ssl_tls1_syncthing.markli.cn.txt nook
 ```
-> 如上最后输出的就是哪个域名支持哪个TLS协议是否ok，如果不支持则为ok，不支持则为nook
+> 如上最后输出的就是哪个域名支持哪个TLS协议是否ok，如果支持则为ok，不支持则为nook
 
 
 执行完成后目录结构
