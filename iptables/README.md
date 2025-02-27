@@ -228,3 +228,33 @@ num   pkts bytes target     prot opt in     out     source               destina
 6        0     0 ACCEPT     all  --  docker0 docker0  0.0.0.0/0            0.0.0.0/0
 ##########################
 ```
+
+
+
+# FAQ
+
+
+
+## 执行make无法完全执行成功
+```bash
+[root@jenkins-slave /shell/iptables]# ./make_iptables_rule.sh show
+........
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination         
+1        0     0 DROP       tcp  --  *      *       172.16.30.0/24       172.19.0.2           tcp dpt:9848
+2        4   240 DROP       tcp  --  *      *       192.168.13.0/24      172.19.0.2           tcp dpt:9848
+3     416M  438G DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+4     416M  438G DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+5      99M  108G ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+6    4033K  242M DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0           
+
+
+[root@jenkins-slave /shell/iptables]# ./make_iptables_rule.sh make
+[INFO] CONTAINER:
+[INFO] (192.168.13.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
+[INFO] (172.16.30.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
+[INFO] (192.168.13.236 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
+[INFO] (192.168.13.237 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
+```
+> 原因：脚本第一次执行时只添加了黑名单，而未添加白名单，所以第二次执行时，脚本会认为黑名单已经存在，而不会添加白名单。
+> 解决方法：手动添加白名单规则，或者先执行一次`./make_iptables_rule.sh remove`命令。
