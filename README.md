@@ -1,2 +1,1 @@
-# bash
-this is my common bash
+this is my common shell
