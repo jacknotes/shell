@@ -38,7 +38,7 @@ container_var(){
 }
 
 host_var(){
-        declare -g -a LOCALHOST_PORTS=('9100 8088 ')
+        declare -g -a LOCALHOST_PORTS=('9100 8088')
         declare -g -a LOCALHOST_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.0/24')
         declare -g -a LOCALHOST_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
 }
@@ -48,18 +48,19 @@ host_var(){
 
 # 脚本使用方法
 脚本有三个参数，分别是`make`,`remove`,`show`,分别表示生成规则、删除规则和查看当前iptables规则
-
+在`make`,`remove`命令中，使用子命令`host`,`container`可以对host和container的iptables规则单独进行生成或删除，`all`表示对host和container同时生成或删除
 
 
 ## 查看帮助信息
 ```bash
 [root@test /shell]# ./make_iptables_rule.sh
-Usage ./make_iptables_rule.sh [ make | remove | show ]
+Usage ./make_iptables_rule.sh ACTION | show
+where  ACTION := { make | remove } { host | container | all }
 
 [root@test /shell]# ./make_iptables_rule.sh show
 ##########################
-[INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 ##########################
 
 
@@ -93,50 +94,54 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 生成iptables规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh make
-[INFO] CONTAINER:
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
-[INFO] LOCALHOST:
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
-[INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
+[root@test-backend02 /shell]# ./make_iptables_rule.sh make all
+####################
+       HOST
+####################
 [INFO] make iptalbles rule: 172.168.2.219 -> 0.0.0.0:9100 ACCEPT successful
 [INFO] make iptalbles rule: 192.168.13.236 -> 0.0.0.0:9100 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:8088 DROP successful
-[INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:8088 DROP successful
+[INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
+[INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
 [INFO] make iptalbles rule: 172.168.2.219 -> 0.0.0.0:8088 ACCEPT successful
 [INFO] make iptalbles rule: 192.168.13.236 -> 0.0.0.0:8088 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:8088 DROP successful
+[INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:8088 DROP successful
+####################
+     CONTAINER
+####################
+[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
+[INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
+[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
+[INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
+[INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
 ```
 
 
 
 ## 查看当前iptables中INPUT、FORWARD、DOCKER三个chain的规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh show
+[root@test-backend02 /shell]# ./make_iptables_rule.sh show
 ##########################
-[INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 ##########################
 
 
 [INFO] host iptables rules
 ##########################
-Chain INPUT (policy ACCEPT 203 packets, 28190 bytes)
+Chain INPUT (policy ACCEPT 28 packets, 23976 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
 1        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       0.0.0.0/0            tcp dpt:8088
 2        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        0.0.0.0/0            tcp dpt:8088
-3        0     0 DROP       tcp  --  *      *       172.168.2.0/24       0.0.0.0/0            tcp dpt:8088
-4        0     0 DROP       tcp  --  *      *       192.168.13.0/24      0.0.0.0/0            tcp dpt:8088
-5        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       0.0.0.0/0            tcp dpt:9100
-6        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        0.0.0.0/0            tcp dpt:9100
-7        0     0 DROP       tcp  --  *      *       172.168.2.0/24       0.0.0.0/0            tcp dpt:9100
-8        0     0 DROP       tcp  --  *      *       192.168.13.0/24      0.0.0.0/0            tcp dpt:9100
+3        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       0.0.0.0/0            tcp dpt:9100
+4        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        0.0.0.0/0            tcp dpt:9100
+5        0     0 DROP       tcp  --  *      *       192.168.13.0/24      0.0.0.0/0            tcp dpt:9100
+6        0     0 DROP       tcp  --  *      *       172.168.2.0/24       0.0.0.0/0            tcp dpt:9100
+7        0     0 DROP       tcp  --  *      *       192.168.13.0/24      0.0.0.0/0            tcp dpt:8088
+8        0     0 DROP       tcp  --  *      *       172.168.2.0/24       0.0.0.0/0            tcp dpt:8088
 ##########################
 
 
@@ -152,12 +157,12 @@ Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
 1        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.3           tcp dpt:80
 2        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.3           tcp dpt:80
-3        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.3           tcp dpt:80
-4        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.3           tcp dpt:80
-5        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.2           tcp dpt:80
-6        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.2           tcp dpt:80
-7        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.2           tcp dpt:80
-8        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.2           tcp dpt:80
+3        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.2           tcp dpt:80
+4        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.2           tcp dpt:80
+5        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.2           tcp dpt:80
+6        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.2           tcp dpt:80
+7        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.3           tcp dpt:80
+8        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.3           tcp dpt:80
 9      332 43699 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 10     332 43699 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 11     158 19888 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
@@ -171,17 +176,10 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ## 移除所添加的iptables规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh remove
-[INFO] CONTAINER:
-[INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
-[INFO] LOCALHOST:
+[root@test-backend02 /shell]# ./make_iptables_rule.sh remove all
+####################
+       HOST
+####################
 [INFO] remove iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.219 -> 0.0.0.0:9100 ACCEPT successful
@@ -190,22 +188,33 @@ num   pkts bytes target     prot opt in     out     source               destina
 [INFO] remove iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:8088 DROP successful
 [INFO] remove iptalbles rule: 172.168.2.219 -> 0.0.0.0:8088 ACCEPT successful
 [INFO] remove iptalbles rule: 192.168.13.236 -> 0.0.0.0:8088 ACCEPT successful
+####################
+     CONTAINER
+####################
+[INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
+[INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
+[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
+[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
+[INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
+[INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
+[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
+[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
 ```
 
 
 
 ## 查看当前iptables中INPUT、FORWARD、DOCKER三个chain的规则
 ```bash
-[root@test /shell]# ./make_iptables_rule.sh show
+[root@test-backend02 /shell]# ./make_iptables_rule.sh show
 ##########################
-[INFO] execute host info: LOCALHOST_PORTS: 9100 8088 , LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[INFO] execute container info: CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
 ##########################
 
 
 [INFO] host iptables rules
 ##########################
-Chain INPUT (policy ACCEPT 184 packets, 16028 bytes)
+Chain INPUT (policy ACCEPT 30 packets, 25345 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
 ##########################
 
@@ -249,7 +258,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 6    4033K  242M DOCKER     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0           
 
 
-[root@jenkins-slave /shell/iptables]# ./make_iptables_rule.sh make
+[root@jenkins-slave /shell/iptables]# ./make_iptables_rule.sh make container 
 [INFO] CONTAINER:
 [INFO] (192.168.13.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
 [INFO] (172.16.30.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
@@ -257,4 +266,4 @@ num   pkts bytes target     prot opt in     out     source               destina
 [INFO] (192.168.13.237 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
 ```
 > 原因：脚本第一次执行时只添加了黑名单，而未添加白名单，所以第二次执行时，脚本会认为黑名单已经存在，而不会添加白名单。
-> 解决方法：手动添加白名单规则，或者先执行一次`./make_iptables_rule.sh remove`命令。
+> 解决方法：手动添加白名单规则，或者先执行一次`./make_iptables_rule.sh remove container`命令。
