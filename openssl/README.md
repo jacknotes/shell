@@ -385,6 +385,7 @@ Verify return code: 20 (unable to get local issuer certificate)
 ./output/ssl_tls1_ql.markli.cn.txt nook
 ./output/ssl_tls1_rd.markli.cn.txt nook
 ./output/ssl_tls1_syncthing.markli.cn.txt nook
+
 [root@hw-blog test-ssl-version]# ./openssl_client_test.sh filter blog.markli.cn
 ./output/ssl_tls1_1_blog.markli.cn.txt nook
 ./output/ssl_tls1_2_blog.markli.cn.txt ok

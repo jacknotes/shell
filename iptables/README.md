@@ -1,6 +1,5 @@
 # 脚本作用
 * 此脚本用于一键生成iptables规则，针对本机和容器暴露的服务端口进行防护，在安装docker环境的服务器亦可使用
-* 此脚本建议第一次使用，后面再次使用建议手动插入Iptables规则，如果改变脚本中的地址信息后，使用此脚本的DROP规则可能会覆盖老的ACCEPT规则，慎用
 
 
 
@@ -18,6 +17,7 @@ LISTEN     0      128                                                           
 LISTEN     0      128                                                                                   [::]:8080                                                                                              [::]:*
 LISTEN     0      128                                                                                   [::]:8081                                                                                              [::]:*
 LISTEN     0      128                                                                                   [::]:22                                                                                                [::]:*
+
 [root@test /shell]# docker ps -a
 CONTAINER ID   IMAGE                                              COMMAND                  CREATED        STATUS        PORTS                  NAMES
 1e74d2ef4341   harborrepo.hs.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   2 hours ago    Up 2 hours    0.0.0.0:8081->80/tcp   nginx02
