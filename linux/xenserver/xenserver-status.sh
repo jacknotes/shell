@@ -26,6 +26,6 @@ for i in ${LOGFILE};do
 	echo "" >> ${JOB_FILE}
 done
 
-cat ${JOB_FILE} | mail -s "xenserver snapshot status" jack.li@homsom.com
+cat ${JOB_FILE} | mail -s "xenserver snapshot status" username@domain.com
 [ $? == 0 ] && rm -rf ${JOB_FILE}
 

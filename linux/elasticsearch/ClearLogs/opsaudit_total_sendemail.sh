@@ -70,7 +70,7 @@ echo "DATETIME: `date +'%F-%T'`" >> ${TMPLOGFILE}
 ssh root@10.10.13.196 'tail -n 5 /shell/shell.log' >> ${TMPLOGFILE}
 
 #send mail
-cat ${TMPLOGFILE} | mail -s "everyday elk job" jack.li@homsom.com
+cat ${TMPLOGFILE} | mail -s "everyday elk job" username@domain.com
 [ $? == 0 ] && rm -rf ${TMPLOGFILE}
 
 

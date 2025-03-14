@@ -1,5 +1,5 @@
 #!/bin/sh
-#author: jack.li
+#author: username
 #datetime: 20210226-14:34
 #description: cron make snapshot and clean history snapshot
 

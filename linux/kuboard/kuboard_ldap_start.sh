@@ -7,7 +7,7 @@ sudo docker run -d \
   -e KUBOARD_AGENT_SERVER_TCP_PORT="20081" \
   -v /data/kuboard-data:/data \
   -e KUBOARD_LOGIN_TYPE="ldap" \
-  -e KUBOARD_ROOT_USER="0799" \
+  -e KUBOARD_ROOT_USER="0001" \
   -e LDAP_HOST="192.168.10.250:389" \
   -e LDAP_SKIP_SSL_VERIFY="true" \
   -e LDAP_BIND_DN="CN=域管理员,OU=Services,OU=Headquarter,dc=hs,dc=com" \
