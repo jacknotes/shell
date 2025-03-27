@@ -11,7 +11,7 @@ sudo docker run -d \
   -e LDAP_HOST="192.168.10.250:389" \
   -e LDAP_SKIP_SSL_VERIFY="true" \
   -e LDAP_BIND_DN="CN=域管理员,OU=Services,OU=Headquarter,dc=hs,dc=com" \
-  -e LDAP_BIND_PASSWORD="ops@1qa2ws" \
+  -e LDAP_BIND_PASSWORD="123456" \
   -e LDAP_BASE_DN="OU=技术研发中心,OU=部门员工,OU=Users,OU=Headquarter,DC=hs,DC=com" \
   -e LDAP_FILTER="(objectClass=user)" \
   -e LDAP_ID_ATTRIBUTE="sAMAccountName" \
