@@ -130,7 +130,7 @@ compile(){
 	                # jdk21
 	                echo "[INFO]: Use jdk21 compile"
 	                container_dir='/jdk21'
-	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/jdk21-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/java/ops_jdk21-maven3_3_9:v1 mvn clean package -U -Dmaven.test.skip=true
+	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/jdk21-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/java/ops_jdk21-maven3_3_9:v1 mvn clean package -U -Dmaven.test.skip=true
 	                if [ $? == 0 ];then
 	                        echo "[INFO]: Java Project Build Succeed" 
 	                else
@@ -159,29 +159,29 @@ compile(){
 	                # node18
 	                echo "[INFO]: Use node18 compile"
 	                container_dir='/node18'
-	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node18-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:18.0.0-buster npm install && npm run build
-	                #sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node18-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:18.19.0-buster npm install && npm run build
+	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node18-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:18.0.0-buster npm install && npm run build
+	                #sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node18-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:18.19.0-buster npm install && npm run build
 	        elif [[ `head -n 1 Dockerfile | grep -i node20` ]];then
 	                # node20
 	                echo "[INFO]: Use node20 compile"
 	                container_dir='/node20'
-	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node20-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:20.8.0-buster npm install && npm run build
+	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node20-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:20.8.0-buster npm install && npm run build
 	        elif [[ `head -n 1 Dockerfile | grep -i node21` ]];then
 	                # node21
 	                echo "[INFO]: Use node21 compile"
 	                container_dir='/node21'
-	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node21-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:21.7.3-alpine npm install && npm run build
+	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node21-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:21.7.3-alpine npm install && npm run build
 	        elif [[ `head -n 1 Dockerfile | grep -i node22` ]];then
 	                # node22
 	                echo "[INFO]: Use node22 compile"
 	                container_dir='/node22'
-	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node22-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:22.12.0-alpine npm install && npm run build
-	                #sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node22-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:22.13.0-alpine3.21 npm install && npm run build
+	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node22-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:22.12.0-alpine npm install && npm run build
+	                #sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node22-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:22.13.0-alpine3.21 npm install && npm run build
 	        elif [[ `head -n 1 Dockerfile | grep -i node23` ]];then
 	                # node23
 	                echo "[INFO]: Use node23 compile"
 	                container_dir='/node23'
-	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node23-root:/root -v `pwd`:${container_dir} harborrepo.hs.com/base/node:23.7.0-alpine npm install && npm run build
+	                sudo docker run --privileged --rm --workdir "${container_dir}" -v /data/node23-root:/root -v `pwd`:${container_dir} harborrepo.domain.com/base/node:23.7.0-alpine npm install && npm run build
 	        else
 	                # node16
 	                echo "[INFO]: Use node16 compile"
@@ -439,7 +439,7 @@ git_k8s_imageUpdate(){
 	fi
 
 	if [ $? == 0 ];then
-		log_info "update image version and git push successful, k8s deploying......, see https://argocd.k8s.hs.com/applications/${GIT_K8S_PROJECT_ENV}-${LANGUAGE}-${GIT_K8S_PROJECT_NAME}"
+		log_info "update image version and git push successful, k8s deploying......, see https://argocd.k8s.domain.com/applications/${GIT_K8S_PROJECT_ENV}-${LANGUAGE}-${GIT_K8S_PROJECT_NAME}"
 	else
 		log_fail "update image version and git push fail"
                 exit 10

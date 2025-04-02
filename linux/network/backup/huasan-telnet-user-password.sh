@@ -36,7 +36,7 @@ expect {
 
 expect {
 	"<*SW*>" {
-		send "tftp 192.168.13.236 put flash:/startup.cfg ${filename}-${date}.cfg\n"
+		send "tftp 10.10.13.236 put flash:/startup.cfg ${filename}-${date}.cfg\n"
 	}
    	timeout {
    	    puts "Timeout occurred, exiting."

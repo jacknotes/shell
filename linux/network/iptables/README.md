@@ -20,8 +20,8 @@ LISTEN     0      128                                                           
 
 [root@test /shell]# docker ps -a
 CONTAINER ID   IMAGE                                              COMMAND                  CREATED        STATUS        PORTS                  NAMES
-1e74d2ef4341   harborrepo.hs.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   2 hours ago    Up 2 hours    0.0.0.0:8081->80/tcp   nginx02
-2f5ccb866c4b   harborrepo.hs.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   23 hours ago   Up 23 hours   0.0.0.0:8080->80/tcp   nginx
+1e74d2ef4341   harborrepo.domain.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   2 hours ago    Up 2 hours    0.0.0.0:8081->80/tcp   nginx02
+2f5ccb866c4b   harborrepo.domain.com/base/frontend/ops_nginx:alpine   "/docker-entrypoint.…"   23 hours ago   Up 23 hours   0.0.0.0:8080->80/tcp   nginx
 
 ```
 
@@ -33,14 +33,14 @@ CONTAINER ID   IMAGE                                              COMMAND       
 container_var(){
         # HOST_PORT:CONTAINER_PORT
         declare -g -a CONTAINER_PORTS=('8080:80 8081:80')
-        declare -g -a CONTAINER_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.122')
-        declare -g -a CONTAINER_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
+        declare -g -a CONTAINER_IP_BLACK_LIST=('10.10.13.0/24' '192.168.2122')
+        declare -g -a CONTAINER_IP_WHITE_LIST=('192.168.2219 10.10.13.236')
 }
 
 host_var(){
         declare -g -a LOCALHOST_PORTS=('9100 8088')
-        declare -g -a LOCALHOST_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.0/24')
-        declare -g -a LOCALHOST_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
+        declare -g -a LOCALHOST_IP_BLACK_LIST=('10.10.13.0/24' '192.168.20/24')
+        declare -g -a LOCALHOST_IP_WHITE_LIST=('192.168.2219 10.10.13.236')
 }
 ```
 
@@ -59,8 +59,8 @@ where  ACTION := { make | remove } { host | container | all }
 
 [root@test /shell]# ./make_iptables_rule.sh show
 ##########################
-[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 10.10.13.0/24 192.168.20/24, LOCALHOST_IP_WHITE_LIST: 192.168.2219 10.10.13.236
+[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 10.10.13.0/24 192.168.2122, CONTAINER_IP_WHITE_LIST: 192.168.2219 10.10.13.236
 ##########################
 
 
@@ -98,25 +98,25 @@ num   pkts bytes target     prot opt in     out     source               destina
 ####################
        HOST
 ####################
-[INFO] make iptalbles rule: 172.168.2.219 -> 0.0.0.0:9100 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.236 -> 0.0.0.0:9100 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
-[INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
-[INFO] make iptalbles rule: 172.168.2.219 -> 0.0.0.0:8088 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.236 -> 0.0.0.0:8088 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:8088 DROP successful
-[INFO] make iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:8088 DROP successful
+[INFO] make iptalbles rule: 192.168.2219 -> 0.0.0.0:9100 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.236 -> 0.0.0.0:9100 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.0/24 -> 0.0.0.0:9100 DROP successful
+[INFO] make iptalbles rule: 192.168.20/24 -> 0.0.0.0:9100 DROP successful
+[INFO] make iptalbles rule: 192.168.2219 -> 0.0.0.0:8088 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.236 -> 0.0.0.0:8088 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.0/24 -> 0.0.0.0:8088 DROP successful
+[INFO] make iptalbles rule: 192.168.20/24 -> 0.0.0.0:8088 DROP successful
 ####################
      CONTAINER
 ####################
-[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
-[INFO] make iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
-[INFO] make iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
+[INFO] make iptalbles rule: 192.168.2219 -> 172.17.0.2:80 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.236 -> 172.17.0.2:80 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.0/24 -> 172.17.0.2:80 DROP successful
+[INFO] make iptalbles rule: 192.168.2122 -> 172.17.0.2:80 DROP successful
+[INFO] make iptalbles rule: 192.168.2219 -> 172.17.0.3:80 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.236 -> 172.17.0.3:80 ACCEPT successful
+[INFO] make iptalbles rule: 10.10.13.0/24 -> 172.17.0.3:80 DROP successful
+[INFO] make iptalbles rule: 192.168.2122 -> 172.17.0.3:80 DROP successful
 ```
 
 
@@ -125,8 +125,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 ```bash
 [root@test-backend02 /shell]# ./make_iptables_rule.sh show
 ##########################
-[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 10.10.13.0/24 192.168.20/24, LOCALHOST_IP_WHITE_LIST: 192.168.2219 10.10.13.236
+[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 10.10.13.0/24 192.168.2122, CONTAINER_IP_WHITE_LIST: 192.168.2219 10.10.13.236
 ##########################
 
 
@@ -134,14 +134,14 @@ num   pkts bytes target     prot opt in     out     source               destina
 ##########################
 Chain INPUT (policy ACCEPT 28 packets, 23976 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
-1        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       0.0.0.0/0            tcp dpt:8088
-2        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        0.0.0.0/0            tcp dpt:8088
-3        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       0.0.0.0/0            tcp dpt:9100
-4        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        0.0.0.0/0            tcp dpt:9100
-5        0     0 DROP       tcp  --  *      *       192.168.13.0/24      0.0.0.0/0            tcp dpt:9100
-6        0     0 DROP       tcp  --  *      *       172.168.2.0/24       0.0.0.0/0            tcp dpt:9100
-7        0     0 DROP       tcp  --  *      *       192.168.13.0/24      0.0.0.0/0            tcp dpt:8088
-8        0     0 DROP       tcp  --  *      *       172.168.2.0/24       0.0.0.0/0            tcp dpt:8088
+1        0     0 ACCEPT     tcp  --  *      *       10.10.13.236       0.0.0.0/0            tcp dpt:8088
+2        0     0 ACCEPT     tcp  --  *      *       192.168.2219        0.0.0.0/0            tcp dpt:8088
+3        0     0 ACCEPT     tcp  --  *      *       10.10.13.236       0.0.0.0/0            tcp dpt:9100
+4        0     0 ACCEPT     tcp  --  *      *       192.168.2219        0.0.0.0/0            tcp dpt:9100
+5        0     0 DROP       tcp  --  *      *       10.10.13.0/24      0.0.0.0/0            tcp dpt:9100
+6        0     0 DROP       tcp  --  *      *       192.168.20/24       0.0.0.0/0            tcp dpt:9100
+7        0     0 DROP       tcp  --  *      *       10.10.13.0/24      0.0.0.0/0            tcp dpt:8088
+8        0     0 DROP       tcp  --  *      *       192.168.20/24       0.0.0.0/0            tcp dpt:8088
 ##########################
 
 
@@ -155,14 +155,14 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
-1        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.3           tcp dpt:80
-2        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.3           tcp dpt:80
-3        0     0 ACCEPT     tcp  --  *      *       192.168.13.236       172.17.0.2           tcp dpt:80
-4        0     0 ACCEPT     tcp  --  *      *       172.168.2.219        172.17.0.2           tcp dpt:80
-5        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.2           tcp dpt:80
-6        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.2           tcp dpt:80
-7        0     0 DROP       tcp  --  *      *       192.168.13.0/24      172.17.0.3           tcp dpt:80
-8        0     0 DROP       tcp  --  *      *       172.168.2.122        172.17.0.3           tcp dpt:80
+1        0     0 ACCEPT     tcp  --  *      *       10.10.13.236       172.17.0.3           tcp dpt:80
+2        0     0 ACCEPT     tcp  --  *      *       192.168.2219        172.17.0.3           tcp dpt:80
+3        0     0 ACCEPT     tcp  --  *      *       10.10.13.236       172.17.0.2           tcp dpt:80
+4        0     0 ACCEPT     tcp  --  *      *       192.168.2219        172.17.0.2           tcp dpt:80
+5        0     0 DROP       tcp  --  *      *       10.10.13.0/24      172.17.0.2           tcp dpt:80
+6        0     0 DROP       tcp  --  *      *       192.168.2122        172.17.0.2           tcp dpt:80
+7        0     0 DROP       tcp  --  *      *       10.10.13.0/24      172.17.0.3           tcp dpt:80
+8        0     0 DROP       tcp  --  *      *       192.168.2122        172.17.0.3           tcp dpt:80
 9      332 43699 DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 10     332 43699 DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 11     158 19888 ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
@@ -180,25 +180,25 @@ num   pkts bytes target     prot opt in     out     source               destina
 ####################
        HOST
 ####################
-[INFO] remove iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:9100 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:9100 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.219 -> 0.0.0.0:9100 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.236 -> 0.0.0.0:9100 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.0/24 -> 0.0.0.0:8088 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.0/24 -> 0.0.0.0:8088 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.219 -> 0.0.0.0:8088 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.236 -> 0.0.0.0:8088 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.0/24 -> 0.0.0.0:9100 DROP successful
+[INFO] remove iptalbles rule: 192.168.20/24 -> 0.0.0.0:9100 DROP successful
+[INFO] remove iptalbles rule: 192.168.2219 -> 0.0.0.0:9100 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.236 -> 0.0.0.0:9100 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.0/24 -> 0.0.0.0:8088 DROP successful
+[INFO] remove iptalbles rule: 192.168.20/24 -> 0.0.0.0:8088 DROP successful
+[INFO] remove iptalbles rule: 192.168.2219 -> 0.0.0.0:8088 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.236 -> 0.0.0.0:8088 ACCEPT successful
 ####################
      CONTAINER
 ####################
-[INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.2:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.2:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.2:80 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.2:80 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.0/24 -> 172.17.0.3:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.122 -> 172.17.0.3:80 DROP successful
-[INFO] remove iptalbles rule: 172.168.2.219 -> 172.17.0.3:80 ACCEPT successful
-[INFO] remove iptalbles rule: 192.168.13.236 -> 172.17.0.3:80 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.0/24 -> 172.17.0.2:80 DROP successful
+[INFO] remove iptalbles rule: 192.168.2122 -> 172.17.0.2:80 DROP successful
+[INFO] remove iptalbles rule: 192.168.2219 -> 172.17.0.2:80 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.236 -> 172.17.0.2:80 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.0/24 -> 172.17.0.3:80 DROP successful
+[INFO] remove iptalbles rule: 192.168.2122 -> 172.17.0.3:80 DROP successful
+[INFO] remove iptalbles rule: 192.168.2219 -> 172.17.0.3:80 ACCEPT successful
+[INFO] remove iptalbles rule: 10.10.13.236 -> 172.17.0.3:80 ACCEPT successful
 ```
 
 
@@ -207,8 +207,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 ```bash
 [root@test-backend02 /shell]# ./make_iptables_rule.sh show
 ##########################
-[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.0/24, LOCALHOST_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
-[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 192.168.13.0/24 172.168.2.122, CONTAINER_IP_WHITE_LIST: 172.168.2.219 192.168.13.236
+[ HOST INFO ] LOCALHOST_PORTS: 9100 8088, LOCALHOST_IP_BLACK_LIST: 10.10.13.0/24 192.168.20/24, LOCALHOST_IP_WHITE_LIST: 192.168.2219 10.10.13.236
+[ CONTAINER INFO ] CONTAINER_PORTS(HOST_PORT:CONTAINER_PORT): 8080:80 8081:80, CONTAINER_IP_BLACK_LIST: 10.10.13.0/24 192.168.2122, CONTAINER_IP_WHITE_LIST: 192.168.2219 10.10.13.236
 ##########################
 
 
@@ -251,7 +251,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 num   pkts bytes target     prot opt in     out     source               destination         
 1        0     0 DROP       tcp  --  *      *       172.16.30.0/24       172.19.0.2           tcp dpt:9848
-2        4   240 DROP       tcp  --  *      *       192.168.13.0/24      172.19.0.2           tcp dpt:9848
+2        4   240 DROP       tcp  --  *      *       10.10.13.0/24      172.19.0.2           tcp dpt:9848
 3     416M  438G DOCKER-USER  all  --  *      *       0.0.0.0/0            0.0.0.0/0           
 4     416M  438G DOCKER-ISOLATION-STAGE-1  all  --  *      *       0.0.0.0/0            0.0.0.0/0           
 5      99M  108G ACCEPT     all  --  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
@@ -260,10 +260,10 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 [root@jenkins-slave /shell/iptables]# ./make_iptables_rule.sh make container 
 [INFO] CONTAINER:
-[INFO] (192.168.13.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
+[INFO] (10.10.13.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
 [INFO] (172.16.30.0/24 -> 172.19.0.2:9848 DROP) iptables rule already exists!!!
-[INFO] (192.168.13.236 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
-[INFO] (192.168.13.237 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
+[INFO] (10.10.13.236 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
+[INFO] (10.10.13.237 -> 172.19.0.2:9848 ACCEPT) iptables rule not exists!!!
 ```
 > 原因：脚本第一次执行时只添加了黑名单，而未添加白名单，所以第二次执行时，脚本会认为黑名单已经存在，而不会添加白名单。
 > 解决方法：手动添加白名单规则，或者先执行一次`./make_iptables_rule.sh remove container`命令。

@@ -78,7 +78,7 @@ expect {
 
 expect {
 	"*Address or name of remote host*" {
-		send "192.168.13.236\n"
+		send "10.10.13.236\n"
 	}
     	timeout {
     	    puts "Timeout occurred, exiting."

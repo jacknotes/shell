@@ -22,7 +22,7 @@ expect {
 
 expect {
 	"*<FW*" {
-		send "tftp 192.168.13.236 put flash:/vrpcfg.zip ${filename}-${date}.zip\n"
+		send "tftp 10.10.13.236 put flash:/vrpcfg.zip ${filename}-${date}.zip\n"
 	}
    	timeout {
    	    puts "Timeout occurred, exiting."

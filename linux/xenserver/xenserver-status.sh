@@ -2,11 +2,11 @@
 #date: 20210226-15:40
 #description: get xenserver snapshot status.
 
-VM_HOST_PREFIX="192.168.13."
+VM_HOST_PREFIX="10.10.13."
 VM_HOST_SUBFIX="60 61 240 241 243 245 246 248 249"
 LOGFILE="/tmp/xenserver-snapshot-status.log"
 JOB_FILE="/tmp/job-xenserver.txt"
-CRON_HOST="192.168.13.236"
+CRON_HOST="10.10.13.236"
 
 echo "HOST: ${CRON_HOST}" > ${LOGFILE}
 echo "DATETIME: `date +'%Y-%m-%d-%T'`" >> ${LOGFILE}

@@ -7,15 +7,15 @@
 
 host_var(){
         declare -g -a LOCALHOST_PORTS=('9100 8088')
-        declare -g -a LOCALHOST_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.0/24')
-        declare -g -a LOCALHOST_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
+        declare -g -a LOCALHOST_IP_BLACK_LIST=('10.10.13.0/24' '192.168.20/24')
+        declare -g -a LOCALHOST_IP_WHITE_LIST=('192.168.2219 10.10.13.236')
 }
 
 container_var(){
         # HOST_PORT:CONTAINER_PORT
         declare -g -a CONTAINER_PORTS=('8080:80 8081:80')
-        declare -g -a CONTAINER_IP_BLACK_LIST=('192.168.13.0/24' '172.168.2.122')
-        declare -g -a CONTAINER_IP_WHITE_LIST=('172.168.2.219 192.168.13.236')
+        declare -g -a CONTAINER_IP_BLACK_LIST=('10.10.13.0/24' '192.168.2122')
+        declare -g -a CONTAINER_IP_WHITE_LIST=('192.168.2219 10.10.13.236')
 }
 
 init_var(){

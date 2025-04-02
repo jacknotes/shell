@@ -29,7 +29,7 @@ foreach($zone in $Zones){
     #$zonename = $zone.ZoneName
     $zonename = $zone
     if ($zonename -eq "TrustAnchors"){
-        #$zonename = "_msdcs.hs.com"
+        #$zonename = "_msdcs.domain.com"
     }
     $filename = $Prefix + $zonename + $Suffix
     #Export-DnsServerZone -FileName $filename -Name $zonename -ComputerName $ComputerName

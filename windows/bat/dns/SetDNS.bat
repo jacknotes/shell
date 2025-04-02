@@ -1,19 +1,19 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM ÉèÖÃDNSµØÖ·
-set "dns1=192.168.13.186"
-set "dns2=192.168.13.251"
+REM ï¿½ï¿½ï¿½ï¿½DNSï¿½ï¿½Ö·
+set "dns1=10.10.13.186"
+set "dns2=10.10.13.251"
 set "dns3=192.168.10.110"
 
-REM ±éÀúËùÓÐÍøÂçÊÊÅäÆ÷£¬ÕÒµ½ÒÔ¡°ÒÔÌ«Íø¡±¿ªÍ·ÇÒ´¦ÓÚ¡°ÒÑÁ¬½Ó¡±×´Ì¬µÄÊÊÅäÆ÷
-for /f "tokens=1,2,3,* delims= " %%a in ('netsh interface show interface ^| findstr /R /C:"ÒÑÁ¬½Ó"') do (
-    echo %%d | findstr /R "^ÒÔÌ«Íø.*$" >nul
+REM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½Ô¡ï¿½ï¿½ï¿½Ì«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Ò´ï¿½ï¿½Ú¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¡ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+for /f "tokens=1,2,3,* delims= " %%a in ('netsh interface show interface ^| findstr /R /C:"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"') do (
+    echo %%d | findstr /R "^ï¿½ï¿½Ì«ï¿½ï¿½.*$" >nul
     if not errorlevel 1 (
         set "adapter=%%d"
         echo Configuring DNS settings for adapter: !adapter!
 
-        REM ÉèÖÃµÚÒ»¸öDNSÎªÖ÷DNS
+        REM ï¿½ï¿½ï¿½Ãµï¿½Ò»ï¿½ï¿½DNSÎªï¿½ï¿½DNS
         netsh interface ipv4 set dns name="!adapter!" static %dns1% primary
         if errorlevel 1 (
             echo Failed to set primary DNS to %dns1% for adapter !adapter!.
@@ -21,7 +21,7 @@ for /f "tokens=1,2,3,* delims= " %%a in ('netsh interface show interface ^| find
             echo Primary DNS set to %dns1% for adapter !adapter!.
         )
 
-        REM Ìí¼ÓµÚ¶þ¸öDNS
+        REM ï¿½ï¿½ï¿½ÓµÚ¶ï¿½ï¿½ï¿½DNS
         netsh interface ipv4 add dns name="!adapter!" addr=%dns2% index=2
         if errorlevel 1 (
             echo Failed to add DNS %dns2% as secondary for adapter !adapter!.
@@ -29,7 +29,7 @@ for /f "tokens=1,2,3,* delims= " %%a in ('netsh interface show interface ^| find
             echo Secondary DNS added: %dns2% for adapter !adapter!.
         )
 
-        REM Ìí¼ÓµÚÈý¸öDNS
+        REM ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½DNS
         netsh interface ipv4 add dns name="!adapter!" addr=%dns3% index=3
         if errorlevel 1 (
             echo Failed to add DNS %dns3% as tertiary for adapter !adapter!.
