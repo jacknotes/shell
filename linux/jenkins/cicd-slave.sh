@@ -124,7 +124,7 @@ init(){
 compile(){
 	# java 
 	if [[ ${LANGUAGE} == 'java' ]];then
-	        log_info 'java comple start'
+	        log_info 'java compile start'
 	        echo "[INFO]: start build java project"
 	        if [[ `head -n 1 Dockerfile | grep -i jdk21` ]];then
 	                # jdk21
@@ -140,7 +140,7 @@ compile(){
 	        else
 	                # jdk8
 	                echo "[INFO]: Use jdk8 compile"
-	                mvn clean package -U -Dmaven.test.skip=true
+	                sudo mvn clean package -U -Dmaven.test.skip=true
 	                if [ $? == 0 ];then
 	                        echo "[INFO]: Java Project Build Succeed" 
 	                else
@@ -148,12 +148,12 @@ compile(){
 	                        exit 10
 	                fi
 	        fi
-	        log_info 'java comple end'
+	        log_info 'java compile end'
 	fi
 	
 	# build vue frontend project
 	if [[ ${VUE} == "vue" ]];then
-		log_info 'vue comple start'
+		log_info 'vue compile start'
 		echo "[INFO]: start build vue frontend project"
 	        if [[ `head -n 1 Dockerfile | grep -i node18` ]];then
 	                # node18
@@ -197,7 +197,7 @@ compile(){
 		        echo "[ERROE]: Vue FrontEnd Project Build Failure" 
 		        exit 10
 		fi
-		log_info 'vue comple end'
+		log_info 'vue compile end'
 	fi
 }
 
