@@ -1,7 +1,7 @@
 #!/bin/bash
 # Description: v2rayN software proxy, default 10808 port is socks proxy, 10809 port is http/https proxy.
 
-HOST='192.168.100.100:10809'
+HOST='10.10.100.100:10809'
 
 function start(){
         echo "[INFO] start http proxy......"

@@ -343,15 +343,15 @@ if __name__ == "__main__":
         # 将xls文件对应的记录写入records列表
         for ucFile in ucFiles:
             try:
-                #遍历每个导出来的excel文件的完整路径，从数据库获取每个文件所属的文件路径、UC号、差旅顾问中文名、差旅顾问英文名、差旅顾问邮箱、郑州经理中文名、差旅经理邮箱并转换为一个对象，默认打印此对象输出UC号
+                #遍历每个导出来的excel文件的完整路径，从数据库获取每个文件所属的文件路径、UC号、测试顾问中文名、测试顾问英文名、测试顾问邮箱、郑州经理中文名、测试经理邮箱并转换为一个对象，默认打印此对象输出UC号
                 records.append(datarepo.GetUCExtendInfo(dbfile_abspath, DB_TABLE, ucFile))
             except:
                 errorUcFiles.append(ucFile)
                 print("[Warning]: ucFile {} 获取扩展信息失败".format(ucFile))
         # 根据顾问分割records列表并转为邮件要素
-        # 按差旅顾问邮箱进行排序并分组追加进列表
+        # 按测试顾问邮箱进行排序并分组追加进列表
         newRecords = emailtask.RecordSegmentation(records)
-        # 获得每个差旅顾问的邮件体{包括发送人、发送姓名、接收人、抄送人、主题、主体信息、附件}，并且分隔在同一个列表中
+        # 获得每个测试顾问的邮件体{包括发送人、发送姓名、接收人、抄送人、主题、主体信息、附件}，并且分隔在同一个列表中
         emailInfos = emailtask.ConvertToEmailInfo(newRecords, SENDER_EMAIL, SENDER_NAME, generate_subject(takeofftime),
                                                   IS_CC_TO_SELF)
         # 发送邮件

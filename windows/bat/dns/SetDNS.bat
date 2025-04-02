@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 REM ����DNS��ַ
 set "dns1=10.10.13.186"
 set "dns2=10.10.13.251"
-set "dns3=192.168.10.110"
+set "dns3=10.10.10.110"
 
 REM ���������������������ҵ��ԡ���̫������ͷ�Ҵ��ڡ������ӡ�״̬��������
 for /f "tokens=1,2,3,* delims= " %%a in ('netsh interface show interface ^| findstr /R /C:"������"') do (

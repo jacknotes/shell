@@ -7,11 +7,11 @@ CREATE TABLE "main"."Untitled" (
   "序号" INTEGER PRIMARY KEY AUTOINCREMENT,
   "UC号码" STRING NOT NULL,
   "单位名称" STRING,
-  "差旅顾问中文名" STRING,
-  "差旅顾问英文名" STRING,
-  "差旅顾问邮箱" STRING,
-  "差旅经理中文名" STRING,
-  "差旅经理邮箱" STRING,
+  "测试顾问中文名" STRING,
+  "测试顾问英文名" STRING,
+  "测试顾问邮箱" STRING,
+  "测试经理中文名" STRING,
+  "测试经理邮箱" STRING,
   UNIQUE ("UC号码" ASC)
 );
 

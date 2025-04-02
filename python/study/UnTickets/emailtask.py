@@ -36,14 +36,14 @@ def _format_addr(s):
 
 def RecordSegmentation(oldRecords):
     #一次排序
-    #根据传入的对象放置到匿名函数中，并按对象的consultant_email(差旅顾问邮箱)进行排序最终返回
+    #根据传入的对象放置到匿名函数中，并按对象的consultant_email(测试顾问邮箱)进行排序最终返回
     sortedRecords = sorted(oldRecords, key=lambda r: r.consultant_email)
     mark_consultant_email = "init"
     temp_records = []
     resultRecord = []
     #二次排序
     for record in sortedRecords:   
-        #循环遍历经过"差旅顾问邮箱"排序的对象，如果第一批相同邮箱先放至temp_records列表，当第二批邮箱不一样时先将temp_records列表的值复制到resultRecord列表中，然后清除temp_records列表并向其中添加第二批邮箱，如此反复
+        #循环遍历经过"测试顾问邮箱"排序的对象，如果第一批相同邮箱先放至temp_records列表，当第二批邮箱不一样时先将temp_records列表的值复制到resultRecord列表中，然后清除temp_records列表并向其中添加第二批邮箱，如此反复
         if mark_consultant_email == record.consultant_email:
             temp_records.append(record)
         if mark_consultant_email != record.consultant_email:
