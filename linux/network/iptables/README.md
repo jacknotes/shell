@@ -3,6 +3,29 @@
 
 
 
+# 配置开机自启动
+```bash
+[root@newhlog ~]# systemctl cat iptables-make.service 
+# /usr/lib/systemd/system/iptables-make.service
+[Unit]
+Description=make iptables host,container rules
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/shell/make_iptables_rule.sh make container
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
+
+[root@newhlog ~]# systemctl daemon-reload
+[root@newhlog ~]# systemctl enable iptables-make.service 
+```
+
+
+
 # 本地运行的服务
 ```bash
 [root@test /shell]# ss -tnl
