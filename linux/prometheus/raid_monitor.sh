@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Pushgateway 地址
-PUSHGATEWAY_URL="http://192.168.10.1:9091"
+PUSHGATEWAY_URL="http://192.168.13.236:9091"
 JOB_NAME="raid_monitor"
 HOST=`/sbin/ip a s eth0 | /bin/grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
 
@@ -22,7 +22,7 @@ for md_device in /dev/md*; do
     if [[ $? -eq 0 ]]; then
         if echo "$detail_output" | grep 'State :' | grep -q 'degraded'; then
             raid_status=1  # 退化
-        elif echo "$detail_output" | grep 'State :' | grep -q 'active'; then
+        elif echo "$detail_output" | grep 'State :' | grep -qE 'active|clean'; then
             raid_status=0  # 正常
         else
             raid_status=2  # 其他异常状态
@@ -35,7 +35,7 @@ for md_device in /dev/md*; do
 	raid_active_devices=`echo "$detail_output" | grep 'Active Devices' | awk -F ':' '{print $2}' | sed 's/^ *//; s/ *$//'`
 	raid_failed_devices=`echo "$detail_output" | grep 'Failed Devices' | awk -F ':' '{print $2}' | sed 's/^ *//; s/ *$//'`
 	raid_spare_devices=`echo "$detail_output" | grep 'Spare Devices :' | awk -F ':' '{print $2}' | sed 's/^ *//; s/ *$//'`
-	raid_array_size=`echo "$detail_output" | grep 'Array Size' | awk -F ':' '{print $2}' | sed 's/^ *//; s/ *$//'`
+	raid_array_size=`echo "$detail_output" | grep 'Array Size' | awk -F '(' '{print $2}' | awk -F ' ' '{print $1,$2}' | xargs | sed 's/^ *//; s/ *$//'`
 	raid_create_time=`echo "$detail_output" | grep 'Creation Time' | awk -F 'Creation Time :' '{print $2}' | sed 's/^ *//; s/ *$//'`
 	raid_update_time=`echo "$detail_output" | grep 'Update Time' | awk -F 'Update Time :' '{print $2}' | sed 's/^ *//; s/ *$//'`
 	
