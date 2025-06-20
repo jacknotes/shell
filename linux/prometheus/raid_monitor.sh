@@ -2,6 +2,7 @@
 
 # Pushgateway 地址
 PUSHGATEWAY_URL="http://192.168.13.236:9091"
+PUSHGATEWAY_URL02="http://192.168.13.237:9091"
 JOB_NAME="raid_monitor"
 HOST=`/sbin/ip a s eth0 | /bin/grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
 
@@ -52,3 +53,4 @@ done
 
 # 推送到 Pushgateway
 curl -s --data-binary "@$METRICS_FILE" "$PUSHGATEWAY_URL/metrics/job/$JOB_NAME/instance/${HOST}"
+curl -s --data-binary "@$METRICS_FILE" "$PUSHGATEWAY_URL02/metrics/job/$JOB_NAME/instance/${HOST}"
