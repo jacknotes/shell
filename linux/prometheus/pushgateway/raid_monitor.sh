@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Pushgateway 地址
-PUSHGATEWAY_URL="http://192.168.13.236:9091"
-PUSHGATEWAY_URL02="http://192.168.13.237:9091"
+PUSHGATEWAY_URL="http://192.168.100.236:9091"
+PUSHGATEWAY_URL02="http://192.168.100.237:9091"
 JOB_NAME="raid_monitor"
 HOST=`/sbin/ip a s eth0 | /bin/grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
 
