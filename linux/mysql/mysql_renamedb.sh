@@ -1,11 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
+# 参数检查
+if [ $# -ne 2 ]; then
+    echo "用法: $0 <旧数据库名称> <新数据库名称>"
+    exit 1
+fi
+
 # 参数配置
-OLD_DB="email_tool"
-NEW_DB="email_tool_2025_08_19"
+OLD_DB="$1"
+NEW_DB="$2"
 USER="root"
-PASS="password"
+PASS="homsom+4006"
 HOST="localhost"
 PORT="3306"
 
