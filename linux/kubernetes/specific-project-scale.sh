@@ -1,9 +1,9 @@
 #!/bin/bash
 
-AUTH_PASSWORD='test.com'
+AUTH_PASSWORD='homsom.com'
 ScaleDownValue='0'
 CHECK_INTERVAL=5			# 检查Pod状态的间隔时间（秒）
-MAX_RETRIES=12				# 最大重试次数（5秒*12=60秒超时） 
+MAX_RETRIES=18				# 最大重试次数（5秒*12=60秒超时） 
 GRACE_TIME=$((CHECK_INTERVAL * 7))	# pod有30秒优雅关闭时间，所以预留35秒
 DATETIME='date +"%F %T"'
 
@@ -13,21 +13,21 @@ rolloutlist(){
 pro-java pro-java-flightrefund-order-service-hs-com-rollout 2
 pro-java pro-java-hotelbusiness-service-hs-com-rollout 2
 pro-java pro-java-budget-manageservice-hs-com-rollout 2
-        '
+        ' | grep -v '^#'
 }
 
-# 只针对不受argocd管理的deployment控制器，如果是argocd管理的将更改不了副本
+# 只针对不受argocd管理的deployment控制器，因为argocd管理deployment更改不了副本
 deploymentlist(){
         echo '
 middleware middleware-xxl-job-admin-deployment 2
-        '
+        ' | grep -v '^#'
 }
 
 # 依赖的rollout列表
 requirelist(){
         echo '
 pro-dotnet pro-dotnet-domaineventserviceapi-hs-com-rollout 4
-        '
+        ' | grep -v '^#'
 }
 
 # 并行执行缩放任务的函数
@@ -282,7 +282,7 @@ scaledown(){
     rm "$tmpfile"
     
     # 额外休息35秒，因为有优雅关闭时间30秒
-    echo "`eval "$DATETIME"` [INFO]: 休息$GRACE_TIME秒"
+    echo "`eval "$DATETIME"` [INFO]: 休息 $GRACE_TIME 秒"
     sleep $GRACE_TIME
 
     # 确认所有Pod已停止后再缩容requirelist中的资源
@@ -309,7 +309,7 @@ scaleup(){
     done < <(requirelist)
     
     # 额外休息5秒
-    echo "`eval "$DATETIME"` [INFO]: 休息$CHECK_INTERVAL秒"
+    echo "`eval "$DATETIME"` [INFO]: 休息 $CHECK_INTERVAL 秒"
     sleep $CHECK_INTERVAL
 
     # requirelist资源全部就绪后，再并行扩容rolloutlist和deploymentlist中的资源
@@ -346,7 +346,7 @@ list() {
         kubectl get rollout -n "$namespace" "$rollout" -o wide
         echo "----------------------------------------"
     done < <(rolloutlist)
-    
+  
     echo "=== Deployment状态 ==="
     while read -r namespace deployment replicas; do
         [[ -z "$namespace" || -z "$deployment" ]] && continue
