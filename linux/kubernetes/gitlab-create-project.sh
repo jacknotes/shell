@@ -58,14 +58,14 @@ check() {
 }
 
 create_gitlab_project(){
-	GITLAB_TOKEN="a45nuRz96YmHR3orjdkn"
+	source /root/.gitlab.key
 	GITLAB_PROJECT_NAME="${PROJECT_TYPE}-${PROJECT_DOMAIN}"
 
 	echo "[INFO] create gitlab project name is $GITLAB_PROJECT_NAME"
     	#echo "例如：./gitlab-create-project.sh [ java-testv1.business.service.hs.com | java-testv1-business-service-hs-com ]"
-	/usr/local/bin/gitlab-create-project -token $GITLAB_TOKEN -project $GITLAB_PROJECT_NAME
+	/usr/local/bin/gitlab-create-project -token "$GITLAB_TOKEN" -project "$GITLAB_PROJECT_NAME" -webhook-url "$WEBHOOK_URL" -webhook-token "$WEBHOOK_TOKEN" -username "$GITLAB_USERNAME" -password "$GITLAB_PASSWORD" -add-project -add-project-webhook 
 	if [ $? != 0 ];then
-		echo "[ERROR] create gitlab project $GITLAB_PROJECT_NAME failure!"
+		echo "[ERROR] create gitlab project $GITLAB_PROJECT_NAME and add project webhook failure!"
 		exit 1
 	fi
 }

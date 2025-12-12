@@ -155,10 +155,7 @@ check_pods_stopped() {
     
     # status.phase!=Succeeded,status.phase!=Failed 就是运行的pod
     while [ $retries -lt $MAX_RETRIES ] && [ $running_pods -gt 0 ]; do
-        running_pods=$(kubectl get pods -n "$namespace" | \
-            grep "$resource_name" | grep 'Running' | awk '{print $1}' | xargs -I {} kubectl get pods -n "$namespace" \
-            --field-selector=status.phase!=Succeeded,status.phase!=Failed \
-            -o name | wc -l)
+        running_pods=$(kubectl get pods -n "$namespace" | grep "$resource_name" | grep 'Running' | wc -l)
         
         if [ $running_pods -gt 0 ]; then
 	    echo "`eval "$DATETIME"` [INFO] 仍有 ${running_pods} 个Pod在运行中，等待 ${CHECK_INTERVAL} 秒后重试..."
