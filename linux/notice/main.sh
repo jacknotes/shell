@@ -1,12 +1,14 @@
 #!/bin/bash
 
-EMAIL_ADDRESSES=('222222222@qq.com 111111111@qq.com')
-SELF_ADDRESSES=('222222222@qq.com')
-FEISHU_WEBHOOK_ADDRESS='https://open.feishu.cn/open-apis/bot/v2/hook/18e7516f'
-FEISHU_AT='<at user_id=\"ou_886128a399ef0a8c\">JackLi</at> '
-PYTHON_SHELL='/shell/notice/lunar_to_solar.py'
-NL_YEAR=`$PYTHON_SHELL $(date +"%Y %m %d") | awk -F ' ' '{print $2}'`
-
+EMAIL_ADDRESSES=('test@test.com dfsf@test.com')
+SELF_ADDRESSES=('test@test.com')
+FEISHU_WEBHOOK_ADDRESS='https://open.feishu.cn/open-apis/bot/v2/hook/sfjlasdjfklasdf'
+FEISHU_AT='<at user_id=\"ou_886128a35464645f09ef0a8c\">JackLi</at> '
+# 此脚本实现农历和阳历互转
+# 阳历转农历: python3 date_converter.py 2026 11 25
+# 农历转阳历,最后一个参数:0表示不闰月,1表示闰月: python3 date_converter.py 2025 11 25 0
+PYTHON_SHELL='/shell/notice/date_converter.py'
+NL_YEAR=`$PYTHON_SHELL $(date +"%Y %m %d") | awk -F ' ' '{print $4}'`
 
 test(){
 	today="2026-01-13"
@@ -35,8 +37,8 @@ event_yl_20260113(){
 }
 
 event_nl_1118(){
-	nl_happy_birthday="$NL_YEAR 1 18"
-	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday | awk -F'：' '{print $2}'`
+	nl_happy_birthday="$NL_YEAR 11 18"
+	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday 0 | awk -F': ' '{print $2}'`
 	today="`date +"%Y-%m-%d"`"
 	if [ "$today" == "$yl_happy_birthday" ];then
 		body="今天农历$nl_happy_birthday，是爸爸生日"
@@ -50,8 +52,8 @@ event_nl_1118(){
 }
 
 event_nl_1225(){
-	nl_happy_birthday="$NL_YEAR 1 5"
-	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday | awk -F'：' '{print $2}'`
+	nl_happy_birthday="$NL_YEAR 12 25"
+	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday 0 | awk -F': ' '{print $2}'`
 	today="`date +"%Y-%m-%d"`"
 	if [ "$today" == "$yl_happy_birthday" ];then
 		body="今天农历$nl_happy_birthday，是妈妈生日"
@@ -66,7 +68,7 @@ event_nl_1225(){
 
 event_nl_0110(){
 	nl_happy_birthday="$NL_YEAR 1 10"
-	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday | awk -F'：' '{print $2}'`
+	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday 0 | awk -F': ' '{print $2}'`
 	today="`date +"%Y-%m-%d"`"
 	if [ "$today" == "$yl_happy_birthday" ];then
 		body="今天农历$nl_happy_birthday，是姐姐生日"
@@ -80,8 +82,8 @@ event_nl_0110(){
 }
 
 event_nl_1228(){
-	nl_happy_birthday="$NL_YEAR 1 18"
-	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday | awk -F'：' '{print $2}'`
+	nl_happy_birthday="$NL_YEAR 12 28"
+	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday 0 | awk -F': ' '{print $2}'`
 	today="`date +"%Y-%m-%d"`"
 	if [ "$today" == "$yl_happy_birthday" ];then
 		body="今天农历$nl_happy_birthday，是老婆生日"
@@ -95,8 +97,8 @@ event_nl_1228(){
 }
 
 event_nl_1125(){
-	nl_happy_birthday="$NL_YEAR 1 25"
-	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday | awk -F'：' '{print $2}'`
+	nl_happy_birthday="$NL_YEAR 11 25"
+	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday 0 | awk -F': ' '{print $2}'`
 	today="`date +"%Y-%m-%d"`"
 	if [ "$today" == "$yl_happy_birthday" ];then
 		body="今天农历$nl_happy_birthday，是女儿小钰生日"
@@ -110,8 +112,8 @@ event_nl_1125(){
 }
 
 event_nl_0421(){
-	nl_happy_birthday="$NL_YEAR 2 21"
-	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday | awk -F'：' '{print $2}'`
+	nl_happy_birthday="$NL_YEAR 4 21"
+	yl_happy_birthday=`$PYTHON_SHELL $nl_happy_birthday 0 | awk -F': ' '{print $2}'`
 	today="`date +"%Y-%m-%d"`"
 	if [ "$today" == "$yl_happy_birthday" ];then
 		body="今天农历$nl_happy_birthday，是儿子轩轩和女儿馨馨生日"
